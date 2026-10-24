@@ -3,8 +3,8 @@ runtime:
 
 site:
   title: Solution Patterns for Cloud Native Architectures
-  url: https://redhat-solution-patterns.github.io/solution-patterns/
-  start_page: solution-pattern-template::index.adoc
+  url: https://psehgaft.github.io/solution-pattern-kubevirt-migration/
+  start_page: solution-pattern-kubevirt-migration::index.adoc
 
 content:
   sources:
