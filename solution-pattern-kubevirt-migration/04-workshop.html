@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Solution Pattern: Name Template :: Solution Patterns for Cloud Native Architectures</title>
+    <title>Solution Pattern: Unified Workload Migration to OpenShift Virtualization :: Solution Patterns for Cloud Native Architectures</title>
     <link rel="canonical" href="https://psehgaft.github.io/solution-pattern-kubevirt-migration/solution-pattern-kubevirt-migration/04-workshop.html">
     <link rel="prev" href="03-demo.html">
     <link rel="next" href="developer-resources.html">
@@ -182,11 +182,19 @@
   </div>
   <div class="content">
 <article class="doc">
-<h1 class="page">Solution Pattern: Name Template</h1>
+<h1 class="page">Solution Pattern: Unified Workload Migration to OpenShift Virtualization</h1>
 <h1 id="_workshop" class="sect0"><a class="anchor" href="#_workshop"></a><a class="link" href="#_workshop">Workshop</a></h1>
 <div class="openblock partintro">
 <div class="content">
-what is this workshop and what will be learned
+<div class="paragraph">
+<p>A hands-on, five-lab workshop that builds the landing zone from scratch and finishes with a fully functional migrated-style VM. It was presented at Texas Linux Fest 2026.</p>
+</div>
+<div class="paragraph">
+<p>Participants learn: Linux and OpenShift foundations for virtualization admins, VM networking with Multus and storage with CDI, creating and operating KubeVirt virtual machines, and the day-2 operations every platform team needs (live migration, snapshots, monitoring).</p>
+</div>
+<div class="paragraph">
+<p>The full workshop site (slides, labs in English and Spanish, and the capstone manifest) is published at <a href="https://psehgaft.github.io/txlf2026/" class="bare">https://psehgaft.github.io/txlf2026/</a> and its sources live in the workshop repository.</p>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -194,18 +202,47 @@ what is this workshop and what will be learned
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_before_getting_started"><a class="anchor" href="#_before_getting_started"></a><a class="link" href="#_before_getting_started">1.1. Before getting started</a></h3>
-
+<div class="ulist">
+<ul>
+<li>
+<p>OpenShift 4.x cluster with OpenShift Virtualization enabled</p>
+</li>
+<li>
+<p><code>oc</code> CLI and <code>virtctl</code> plugin installed locally</p>
+</li>
+<li>
+<p>A default storage class for VM disks; Multus available for secondary networks</p>
+</li>
+</ul>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_installing_the_environment"><a class="anchor" href="#_installing_the_environment"></a><a class="link" href="#_installing_the_environment">1.2. Installing the environment</a></h3>
-
+<div class="paragraph">
+<p>Install the OpenShift Virtualization operator from OperatorHub, create the <code>HyperConverged</code> instance, and verify the <code>virt-api</code> pods are running. Each lab then builds on the previous one inside a dedicated namespace per participant.</p>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_delivering_the_workshop"><a class="anchor" href="#_delivering_the_workshop"></a><a class="link" href="#_delivering_the_workshop">2. Delivering the workshop</a></h2>
+<h2 id="deliver_wksp"><a class="anchor" href="#deliver_wksp"></a><a class="link" href="#deliver_wksp">2. Delivering the workshop</a></h2>
 <div class="sectionbody">
-
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Provision one namespace per participant (or per team) with the workshop&#8217;s lab manifests.</p>
+</li>
+<li>
+<p>Guide participants through Labs 1–3 (foundations, networking and storage, KubeVirt).</p>
+</li>
+<li>
+<p>Run Lab 4 as the capstone: every participant deploys a functional VM from the provided manifest.</p>
+</li>
+<li>
+<p>Close with Lab 5 (operations): live migration, backup and observability exercises.</p>
+</li>
+</ol>
+</div>
 </div>
 </div>
 <nav class="pagination">

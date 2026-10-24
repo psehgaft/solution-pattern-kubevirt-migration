@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Solution Pattern: Name Template :: Solution Patterns for Cloud Native Architectures</title>
+    <title>Solution Pattern: Unified Workload Migration to OpenShift Virtualization :: Solution Patterns for Cloud Native Architectures</title>
     <link rel="canonical" href="https://psehgaft.github.io/solution-pattern-kubevirt-migration/solution-pattern-kubevirt-migration/02-architecture.html">
     <link rel="prev" href="index.html">
     <link rel="next" href="03-demo.html">
@@ -182,17 +182,32 @@
   </div>
   <div class="content">
 <article class="doc">
-<h1 class="page">Solution Pattern: Name Template</h1>
+<h1 class="page">Solution Pattern: Unified Workload Migration to OpenShift Virtualization</h1>
 <h1 id="_architecture" class="sect0"><a class="anchor" href="#_architecture"></a><a class="link" href="#_architecture">Architecture</a></h1>
 <div class="openblock partintro">
 <div class="content">
-Introduction for the architecture of this solution pattern.
+The architecture migrates virtual machines from a legacy hypervisor into Red Hat OpenShift Virtualization, where KubeVirt runs each VM inside a pod. The Migration Toolkit for Virtualization orchestrates the move; Multus and Kubernetes storage complete the landing zone.
 </div>
 </div>
 <div class="sect1">
 <h2 id="_common_challenges"><a class="anchor" href="#_common_challenges"></a><a class="link" href="#_common_challenges">1. Common Challenges</a></h2>
 <div class="sectionbody">
-
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Hypervisor lock-in:</strong> proprietary formats, tooling and licensing make the current platform expensive to keep and hard to leave.</p>
+</li>
+<li>
+<p><strong>Two operational worlds:</strong> VMs and containers are managed by different teams, tools and processes.</p>
+</li>
+<li>
+<p><strong>Networking and storage gaps:</strong> VLANs, multiple NICs and persistent disks must map cleanly onto Kubernetes concepts.</p>
+</li>
+<li>
+<p><strong>Migration risk:</strong> cutover windows, data consistency and rollback plans decide whether the project is trusted.</p>
+</li>
+</ul>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -208,17 +223,13 @@ Introduction for the architecture of this solution pattern.
 <p><a href="https://www.redhat.com/en/technologies/cloud-computing/openshift">Red Hat OpenShift</a></p>
 </li>
 <li>
-<p>Red Hat Application Foundation</p>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://access.redhat.com/products/quarkus">Quarkus</a></p>
+<p><a href="https://www.redhat.com/en/technologies/cloud-computing/openshift/virtualization">Red Hat OpenShift Virtualization</a> (KubeVirt)</p>
 </li>
 <li>
-<p><a href="https://www.redhat.com/en/technologies/cloud-computing/openshift/openshift-streams-for-apache-kafka">Kafka Streams</a></p>
+<p>Migration Toolkit for Virtualization (MTV / Forklift)</p>
 </li>
-</ul>
-</div>
+<li>
+<p><a href="https://www.redhat.com/en/technologies/cloud-computing/openshift/data-foundation">Red Hat OpenShift Data Foundation</a></p>
 </li>
 </ul>
 </div>
@@ -228,10 +239,16 @@ Introduction for the architecture of this solution pattern.
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://www.postgresql.org/">PostgreSQL database</a></p>
+<p><a href="https://kubevirt.io/">KubeVirt</a></p>
 </li>
 <li>
-<p><a href="https://helm.sh/">Helm</a></p>
+<p><a href="https://github.com/k8snetworkplumbingwg/multus-cni">Multus CNI</a></p>
+</li>
+<li>
+<p><a href="https://github.com/kubevirt/containerized-data-importer">Containerized Data Importer (CDI)</a></p>
+</li>
+<li>
+<p>Kubernetes CSI storage</p>
 </li>
 </ul>
 </div>
@@ -243,160 +260,50 @@ Introduction for the architecture of this solution pattern.
 <div class="sect1">
 <h2 id="in_depth"><a class="anchor" href="#in_depth"></a><a class="link" href="#in_depth">3. An in-depth look at the solution&#8217;s architecture</a></h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>Technical description including all or some of the following: architecture ir ed diagrams. In-depth details of the decisions made and solutions used. Description of each service and what it is used for. Description of any integration.</p>
-</div>
 <div class="sect2">
-<h3 id="_using_images"><a class="anchor" href="#_using_images"></a><a class="link" href="#_using_images">3.1. Using images</a></h3>
-<div class="imageblock">
-<div class="content">
-<img src="_images/red_hat_open-hybrid-cloud.png" alt="red hat open hybrid cloud" width="30%">
-</div>
-</div>
+<h3 id="_source_and_target"><a class="anchor" href="#_source_and_target"></a><a class="link" href="#_source_and_target">3.1. Source and target</a></h3>
 <div class="paragraph">
-<p></p>
+<p>The source is a traditional hypervisor estate (for example VMware vSphere). The target is an OpenShift cluster — bare metal for performance-sensitive VMs, or any certified infrastructure — with the OpenShift Virtualization operator installed and a default storage class suitable for virtual disks.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_embedding_html"><a class="anchor" href="#_embedding_html"></a><a class="link" href="#_embedding_html">3.2. Embedding HTML</a></h3>
-  <br>
-  <h3> Embed HTML by surrounding it with with four +s before and after. </h3>
-  <span>View the ascii doc to learn more</span>
-  <br>
-</div>
-<div class="sect2">
-<h3 id="_different_decorators"><a class="anchor" href="#_different_decorators"></a><a class="link" href="#_different_decorators">3.3. Different decorators</a></h3>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>This is a Tip</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>This is a NOTE</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>This is a WARNING</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>This is IMPORTANT</p>
-</div>
-</td>
-</tr>
-</table>
+<h3 id="_migration_flow"><a class="anchor" href="#_migration_flow"></a><a class="link" href="#_migration_flow">3.2. Migration flow</a></h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>MTV connects to the source provider and inventories VMs, networks and datastores.</p>
+</li>
+<li>
+<p>A migration plan maps source networks to Multus <code>NetworkAttachmentDefinitions</code> and source datastores to a storage class.</p>
+</li>
+<li>
+<p>Disks are copied with CDI (warm migration pre-copies data while the VM keeps running).</p>
+</li>
+<li>
+<p>At cutover, the VM is shut down on the source, the final delta is synced, and a KubeVirt <code>VirtualMachine</code> is started on OpenShift.</p>
+</li>
+</ol>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_creating_tables"><a class="anchor" href="#_creating_tables"></a><a class="link" href="#_creating_tables">3.4. Creating  tables</a></h3>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><strong>Column A</strong></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Column <strong>A</strong></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><em>Column C</em></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>Lorem Ipsum</p>
-</li>
-<li>
-<p>Lorem Ipsum</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>Lorem Ipsum</p>
-</li>
-<li>
-<p>Lorem Ipsum</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>Lorem Ipsum</p>
-</li>
-<li>
-<p>Lorem Ipsum</p>
-</li>
-</ul>
-</div></div></td>
-</tr>
-</tbody>
-</table>
+<h3 id="_networking_and_storage"><a class="anchor" href="#_networking_and_storage"></a><a class="link" href="#_networking_and_storage">3.3. Networking and storage</a></h3>
+<div class="paragraph">
+<p>VMs keep their identity: Multus attaches them to the same VLANs they used before, while pod networking remains available for management and metrics. Persistent disks become <code>PersistentVolumeClaims</code>; CDI imports golden images so new VMs can be cloned in seconds.</p>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_content_that_can_be_copied"><a class="anchor" href="#_content_that_can_be_copied"></a><a class="link" href="#_content_that_can_be_copied">3.5. Content that can be copied</a></h3>
+<h3 id="_day_2_operations"><a class="anchor" href="#_day_2_operations"></a><a class="link" href="#_day_2_operations">3.4. Day-2 operations</a></h3>
 <div class="paragraph">
-<p>Click below to copy the content</p>
-</div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-shell script hljs" data-lang="shell script">oc version #openshift cli client
-oc login --token=&lt;token&gt; --server=&lt;server&gt;</code></pre>
-</div>
+<p>Live migration, snapshots, console and serial access, monitoring through OpenShift&#8217;s built-in stack, and backup with the platform&#8217;s standard tooling — all from the same console and API used for containers.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="more_tech"><a class="anchor" href="#more_tech"></a><a class="link" href="#more_tech">4. About the Technology Stack</a></h2>
+<h2 id="more_tech"><a class="anchor" href="#more_tech"></a><a class="link" href="#more_tech">4. More about the technology stack</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>If you want to include more details about the tech stack you used, this is the place.</p>
+<p>OpenShift Virtualization is based on KubeVirt, the CNCF project that extends Kubernetes with <code>VirtualMachine</code> resources. Because a VM is a Kubernetes object, everything in the ecosystem — GitOps controllers, policy engines, service meshes and observability stacks — can see it and manage it. MTV is based on the open source Forklift project and supports migrations from VMware vSphere, Red Hat Virtualization, OpenStack and OVA files.</p>
 </div>
 </div>
 </div>
