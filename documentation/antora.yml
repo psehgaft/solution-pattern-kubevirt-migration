@@ -1,5 +1,5 @@
-name: solution-pattern-template
-title: Template Tutorial
+name: solution-pattern-kubevirt-migration
+title: Migrating VMs to OpenShift Virtualization
 version: master
 nav:
   - modules/ROOT/nav.adoc
