@@ -1,4 +1,4 @@
-= Solution Pattern: Name Template
+= Solution Pattern: Unified Workload Migration to OpenShift Virtualization
 :sectnums:
 :sectlinks:
 :doctype: book
@@ -7,28 +7,26 @@
 
 == Demonstration
 
-Include here content related to potential existing demos: blogs, articles, recorded videos, walkthrough guides, tutorials.
-
-[#demo-video]
-=== Watch a demonstration
-
-In this video you can see xpto:
-
-video::3yULVMdqJ98[youtube, width=800, height=480]
-
-Next, you can learn how to walkthrough this demo.
+The demonstration walks a single VM through the full journey of this pattern: it is imported into OpenShift Virtualization, attached to a Multus network, given persistent storage, and then operated like any other workload on the platform — console access, live migration and a functional application check included.
 
 == Run the demonstration
 
 === Before getting started
-To run this demo, you will need xpto. Adding to that, make sure to have:
 
-* ABC
-* XYZ
-* XPTO
+* An OpenShift 4.x cluster with the OpenShift Virtualization operator installed
+* Cluster-admin access (or a namespace admin with permission to create VMs, NADs and PVCs)
+* The `oc` and `virtctl` command-line tools
+* A storage class that supports `ReadWriteMany`/block or filesystem PVCs for virtual disks
 
 === Installing the demo
-Installation guide and basic test of the demo installation if needed
+
+Install the Migration Toolkit for Virtualization operator from OperatorHub, add your source hypervisor as a provider, and create a migration plan for a test VM. Alternatively, follow the workshop's capstone lab to deploy a functional VM directly from a golden image with CDI.
 
 === Walkthrough guide
-How to run through the demo
+
+. Open the OpenShift console and navigate to Virtualization → VirtualMachines.
+. Create or migrate a VM and watch it reach the `Running` state.
+. Open the VM console and log in with the cloud-init credentials.
+. Attach a second network interface through a Multus `NetworkAttachmentDefinition` and verify connectivity.
+. Live-migrate the VM to another node while a ping runs — the session survives.
+. Snapshot the VM and clone it to prove the golden-image workflow.

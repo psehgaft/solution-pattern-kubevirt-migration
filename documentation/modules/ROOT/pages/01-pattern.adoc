@@ -1,7 +1,12 @@
 == The story behind this solution pattern
 
-A description of the story that was used to build the demo and architectures of this SP.
+An architecture team runs hundreds of virtual machines on a proprietary hypervisor whose licensing terms just changed. The renewal quote forces a decision: pay significantly more for the same platform, or move. Re-platforming every application into containers is a multi-year program the business cannot wait for — but the VMs still need to land somewhere open, supportable and automatable.
+
+This pattern tells that story end to end: inventory the source environment, build the OpenShift Virtualization landing zone (networking, storage, quotas), migrate the VMs with the Migration Toolkit for Virtualization, and validate that a migrated VM behaves like a first-class citizen of the platform — console access, live migration, backups and day-2 operations included.
 
 == The Solution
 
-This is a summary of the solution
+* *Landing zone first:* OpenShift cluster with the OpenShift Virtualization operator, Multus for VM networking and a CSI-backed storage class for virtual disks.
+* *Repeatable migration:* the Migration Toolkit for Virtualization (MTV) plans, warms up and cuts over VMs with minimal downtime.
+* *Unified operations:* VMs are Kubernetes objects — they inherit RBAC, GitOps, monitoring and policy from the platform.
+* *Hands-on validation:* a five-lab workshop (foundations, networking and storage, KubeVirt, a functional capstone VM and operations) proves every claim in this pattern.

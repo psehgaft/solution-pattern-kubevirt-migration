@@ -1,104 +1,56 @@
-= Solution Pattern: Name Template
+= Solution Pattern: Unified Workload Migration to OpenShift Virtualization
 :sectnums:
 :sectlinks:
 :doctype: book
 
-= Architecture 
+= Architecture
 
-Introduction for the architecture of this solution pattern.
+The architecture migrates virtual machines from a legacy hypervisor into Red Hat OpenShift Virtualization, where KubeVirt runs each VM inside a pod. The Migration Toolkit for Virtualization orchestrates the move; Multus and Kubernetes storage complete the landing zone.
 
-== Common Challenges 
+== Common Challenges
+
+* *Hypervisor lock-in:* proprietary formats, tooling and licensing make the current platform expensive to keep and hard to leave.
+* *Two operational worlds:* VMs and containers are managed by different teams, tools and processes.
+* *Networking and storage gaps:* VLANs, multiple NICs and persistent disks must map cleanly onto Kubernetes concepts.
+* *Migration risk:* cutover windows, data consistency and rollback plans decide whether the project is trusted.
 
 [#tech_stack]
 == Technology Stack
 
-// Change links and text here as you see fit.
 * Red Hat supported products
 ** https://www.redhat.com/en/technologies/cloud-computing/openshift[Red Hat OpenShift]
-** Red Hat Application Foundation
-*** https://access.redhat.com/products/quarkus[Quarkus]
-*** https://www.redhat.com/en/technologies/cloud-computing/openshift/openshift-streams-for-apache-kafka[Kafka Streams]
+** https://www.redhat.com/en/technologies/cloud-computing/openshift/virtualization[Red Hat OpenShift Virtualization] (KubeVirt)
+** Migration Toolkit for Virtualization (MTV / Forklift)
+** https://www.redhat.com/en/technologies/cloud-computing/openshift/data-foundation[Red Hat OpenShift Data Foundation]
 * Other open source products:
-** https://www.postgresql.org/[PostgreSQL database]
-** https://helm.sh/[Helm]
-
+** https://kubevirt.io/[KubeVirt]
+** https://github.com/k8snetworkplumbingwg/multus-cni[Multus CNI]
+** https://github.com/kubevirt/containerized-data-importer[Containerized Data Importer (CDI)]
+** Kubernetes CSI storage
 
 [#in_depth]
 == An in-depth look at the solution's architecture
 
-Technical description including all or some of the following: architecture ir ed diagrams. In-depth details of the decisions made and solutions used. Description of each service and what it is used for. Description of any integration.
+=== Source and target
 
-=== Using images 
+The source is a traditional hypervisor estate (for example VMware vSphere). The target is an OpenShift cluster — bare metal for performance-sensitive VMs, or any certified infrastructure — with the OpenShift Virtualization operator installed and a default storage class suitable for virtual disks.
 
-image::red_hat_open-hybrid-cloud.png[width=30%]
+=== Migration flow
 
-{empty}
+. MTV connects to the source provider and inventories VMs, networks and datastores.
+. A migration plan maps source networks to Multus `NetworkAttachmentDefinitions` and source datastores to a storage class.
+. Disks are copied with CDI (warm migration pre-copies data while the VM keeps running).
+. At cutover, the VM is shut down on the source, the final delta is synced, and a KubeVirt `VirtualMachine` is started on OpenShift.
 
-=== Embedding HTML
+=== Networking and storage
 
-++++
-  <br>
-  <h3> Embed HTML by surrounding it with with four +s before and after. </h3>
-  <span>View the ascii doc to learn more</span>
-  <br> 
-++++
+VMs keep their identity: Multus attaches them to the same VLANs they used before, while pod networking remains available for management and metrics. Persistent disks become `PersistentVolumeClaims`; CDI imports golden images so new VMs can be cloned in seconds.
 
+=== Day-2 operations
 
-=== Different decorators
-
-[TIP]
-====
-This is a Tip
-====
-
-[NOTE]
-====
-This is a NOTE
-====
-
-[WARNING]
-====
-This is a WARNING
-====
-
-[IMPORTANT]
-====
-This is IMPORTANT
-====
-
-
-=== Creating  tables
- 
-[cols="1a,1a,1a"]
-|===
-| *Column A*  | Column *A* | _Column C_
-|
-* Lorem Ipsum
-* Lorem Ipsum
-
-|
-* Lorem Ipsum
-* Lorem Ipsum
-
-|
-* Lorem Ipsum
-* Lorem Ipsum
-|===
-
-
-
-=== Content that can be copied
-
-Click below to copy the content
-[.console-input]
-[source,shell script]
-----
-oc version #openshift cli client
-oc login --token=<token> --server=<server>
-----
-
+Live migration, snapshots, console and serial access, monitoring through OpenShift's built-in stack, and backup with the platform's standard tooling — all from the same console and API used for containers.
 
 [#more_tech]
-== About the Technology Stack
+== More about the technology stack
 
-If you want to include more details about the tech stack you used, this is the place.
+OpenShift Virtualization is based on KubeVirt, the CNCF project that extends Kubernetes with `VirtualMachine` resources. Because a VM is a Kubernetes object, everything in the ecosystem — GitOps controllers, policy engines, service meshes and observability stacks — can see it and manage it. MTV is based on the open source Forklift project and supports migrations from VMware vSphere, Red Hat Virtualization, OpenStack and OVA files.

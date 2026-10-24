@@ -1,11 +1,11 @@
-= Solution Patterns: Template Name
+= Developer Resources
 :sectnums:
 :sectlinks:
 :doctype: book
 
-
-= Developer Resources
-
-* Add link to the git repo of the code
-* Add links to whitepapers, ebooks, learning paths, product pages
-
+* https://docs.redhat.com/en/documentation/openshift_container_platform/[Red Hat OpenShift documentation]
+* https://docs.redhat.com/en/documentation/openshift_container_platform/4.16/html/virtualization/[OpenShift Virtualization documentation]
+* https://docs.redhat.com/en/documentation/migration_toolkit_for_virtualization/[Migration Toolkit for Virtualization documentation]
+* https://kubevirt.io/user-guide/[KubeVirt user guide]
+* Workshop site: https://psehgaft.github.io/txlf2026/
+* Workshop repository (TXLF 2026 edition): https://github.com/JoeRH-OCP/unify-KubernetesKubevit-workflows-TXLF2026
