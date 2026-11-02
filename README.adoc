@@ -2,24 +2,42 @@
 
 Migrate virtual machines from a legacy hypervisor to Red Hat OpenShift Virtualization (KubeVirt) and operate them next to your containers — one platform, one toolchain.
 
-This repository follows the https://www.solutionpatterns.io[Red Hat Solution Patterns] format and starts from the official `solution-pattern-website-template`.
+Live site: https://psehgaft.github.io/solution-pattern-kubevirt-migration/
 
-== Structure
+This repository follows the https://www.solutionpatterns.io[Red Hat Solution Patterns] format and starts from the official `solution-pattern-website-template`. The pattern shows how to move existing virtualized workloads to OpenShift Virtualization, unify networking and storage under Kubernetes, and operate VMs with the same tools, pipelines and observability as the rest of your cloud-native estate.
 
-* `documentation/` — Antora content (Home, Architecture, Demo, Workshop)
-* `site.yml` / `dev-site.yml` — Antora playbooks for production and local preview
+== Use cases
+
+* Migrating VMs away from a legacy hypervisor (for example, VMware vSphere) ahead of a license renewal or data center exit
+* Consolidating VM and container platforms into one operational model, one team and one set of tools
+* Giving existing VM workloads GitOps, CI/CD and Kubernetes-native networking and storage without re-platforming the application itself
+* Building a landing zone for incremental modernization: run the VM on OpenShift today, containerize service by service tomorrow
+
+== What is inside
+
+* `documentation/` — Antora content source: Home, Architecture, Demo and Workshop pages (`documentation/modules/ROOT/pages/`)
+* `site.yml` / `dev-site.yml` — Antora playbooks for the production site and the local preview
+* `supplemental-ui/` and `lib/` — site UI extras and Antora extensions
+* `site.sh` — production build script (generates the site into `gh-pages/`)
+* `Dockerfile` — containerized build that generates the site and serves it with httpd
 
 == Build and preview locally
 
-Prerequisites: Git, Node.js 12+ and the Gulp CLI.
+Prerequisites: Git, Node.js (see `.nvmrc`) and the Gulp CLI.
 
-[source,shell script]
+[source,shell]
 ----
 npm install
 npx gulp
 ----
 
-The preview is served at http://localhost:3000.
+The preview is served at http://localhost:3000 and rebuilds as you edit the documentation.
+
+To build the production site instead, run `./site.sh` (requires Antora) — the output goes to `gh-pages/`.
+
+== License
+
+Apache-2.0 — see link:LICENSE[LICENSE].
 
 == Contributing
 
